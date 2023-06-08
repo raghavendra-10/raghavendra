@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #e3e2e2;
+    }
+  
+    .container {
+        width: 400px;
+        height: 500px;
+        border: 2px solid #bebebe;
+        border-radius: 5px;
+        margin-right: 20px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .item {
+        background-color: #fff;
+        padding: 10px;
+        margin-bottom: 5px;
+        cursor: move;
+        border: 1px solid #ffffff;
+        border-radius: 3px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+    }
+    
+    .item:hover {
+        background-color: #eaffb2;
+    }
+    
+    .success-message {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 6px 12px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .success-message.show {
+        opacity: 1;
+    }
+    
+    .reset-button {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .reset-button:hover {
+        background-color: #f1f1f1;
+    }
+  
+
+    .popup {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 6px 12px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .popup.show {
+        opacity: 1;
+    }
+
+    .reset-button {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        background-color: #fd5959;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+    }
+
+    .reset-button:hover {
+        background-color: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+    
+  <div class="container">
+    <div class="item" draggable="true">Item 1</div>
+    <div class="item" draggable="true">Item 2</div>
+    <div class="item" draggable="true">Item 3</div>
+    <div class="item" draggable="true">Item 4</div>
+    <div class="item" draggable="true">Item 5</div>
+  </div>
+
+  <div class="container" id="target-container"></div>
+  
+  <button class="reset-button" onclick="resetContainers()">Reset</button>
+
+  <script>
+    const items = document.querySelectorAll('.item');
+    const targetContainer = document.getElementById('target-container');
+    const successMessage = document.getElementById('success-message');
+
+    items.forEach(item => {
+      item.addEventListener('dragstart', dragStart);
+      item.addEventListener('dragend', dragEnd);
+    });
+
+    targetContainer.addEventListener('dragenter', dragEnter);
+    targetContainer.addEventListener('dragover', dragOver);
+    targetContainer.addEventListener('dragleave', dragLeave);
+    targetContainer.addEventListener('drop', drop);
+
+    let draggedItem = null;
+
+    function dragStart() {
+      draggedItem = this;
+      setTimeout(() => {
+        this.style.display = 'none';
+      }, 0);
+    }
+
+    function dragEnd() {
+      draggedItem.style.display = 'block';
+      draggedItem = null;
+    }
+
+    function dragEnter(e) {
+      e.preventDefault();
+      targetContainer.style.border = '2px dashed #aaa';
+    }
+
+    function dragOver(e) {
+      e.preventDefault();
+    }
+
+    function dragLeave() {
+      targetContainer.style.border = '1px solid #ccc';
+    }
+
+    function drop() {
+      targetContainer.appendChild(draggedItem);
+      targetContainer.style.border = '1px solid #ccc';
+      showSuccessMessage();
+    }
+
+    function showSuccessMessage() {
+      const popup = document.createElement('div');
+      popup.className = 'popup';
+      popup.innerText = 'Item dropped successfully!';
+      document.body.appendChild(popup);
+
+      setTimeout(() => {
+       popup.classList.add('show');
+       setTimeout(() => {
+        popup.remove();
+       }, 2000);
+      }, 100);
+    }
+
+    function resetContainers() {
+      targetContainer.innerHTML = '';
+      items.forEach(item => {
+        item.style.display = 'block';
+        document.querySelector('.container:first-child').appendChild(item);
+      });
+
+      const popup = document.createElement('div');
+      popup.className = 'popup';
+      popup.innerText = 'Containers reset successfully!';
+      document.body.appendChild(popup);
+
+        setTimeout(() => {
+            popup.classList.add('show');
+            setTimeout(() => {
+            popup.remove();
+            }, 2000);
+        }, 100);
+        }
+
+
+  </script>
+</body>
+</html>
